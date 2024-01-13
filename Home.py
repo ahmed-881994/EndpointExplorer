@@ -1,9 +1,7 @@
 import streamlit as st
 from streamlit_monaco import st_monaco
 import pprint
-import pandas as pd
 import requests
-import re
 
 # page config
 st.set_page_config(page_title='Endpoint Explorer', page_icon='👩‍🚀', layout='wide', initial_sidebar_state='collapsed')

@@ -88,8 +88,7 @@ if cols[1].button('Send', type='primary'):
                     st.code(body=pprint.pformat(response.headers, sort_dicts=False), language='json', line_numbers=True)
                     # check the Content-Type of response to decide how to display it
                     if response.headers['Content-Type'] == 'application/json':
-                        response_content = str(response.content).lstrip('b\'').rstrip('\'')
-                        st.code(body=pprint.pformat(response_content, sort_dicts=False), language='json', line_numbers=True)
+                        st.code(body=pprint.pformat(response.json(), sort_dicts=False), language='json', line_numbers=True)
                     elif response.headers['Content-Type'] == 'application/xml':
                         response_content = str(response.content).lstrip('b\'').rstrip('\'')
                         st.code(body=response_content,language='xml-doc', line_numbers=True)

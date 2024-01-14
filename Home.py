@@ -1,34 +1,16 @@
 import streamlit as st
 from streamlit_monaco import st_monaco
-import pprint
+from utils import utils
 import requests
+import json
 from streamlit_ace import st_ace
+from bs4 import BeautifulSoup
+from xml.dom import minidom
 # page config
 st.set_page_config(page_title='Endpoint Explorer', page_icon='👨‍🚀', layout='wide', initial_sidebar_state='collapsed')
 
 # title
 st.title('Endpoint Explorer 👨‍🚀')
-
-def prepare_headers(payload_type, headers_dict):
-    """Prepares the request headers dict
-
-    Args:
-        payload_type (str): the payload type ['xml', 'json']
-        headers_dict (dict): the list of key and values generated from the data editor 'hdrs_input' in the format of {'key':[''],'value':['']}
-
-    Returns:
-        dict: Request headers
-    """
-    headers = {}
-    if payload_type and payload_type == 'json':
-        content_type = 'application/' + payload_type
-        headers = {'Content-Type': content_type}
-    for i in range(len(headers_dict['key'])):
-        if headers_dict['key'][i]=='':
-            continue
-        else:
-            headers.update({headers_dict['key'][i]:headers_dict['key'][i]})
-    return headers
 
 # declare columns & init optional variables
 rq_col, rs_col = st.columns(2)
@@ -45,7 +27,7 @@ with rq_col:
         payload_type = cols[0].selectbox('Payload type', ['json', 'xml'], placeholder='Method', label_visibility='collapsed')
         with cols[1]:
             #payload = st_monaco(value='', height="300px", language=payload_type, lineNumbers=True, minimap=True, theme='streamlit')
-            payload = st_ace(language = payload_type, show_gutter=True, auto_update=True, height=252, theme='dracula')
+            payload = st_ace(language = payload_type, show_gutter=True, auto_update=True, height=300, theme='dracula')
    
 
     if 'data' not in st.session_state:
@@ -71,14 +53,11 @@ with rq_col:
         )
     }, key='hdrs_input')
 
-    
-
-
 # send request
 if cols[1].button('Send', type='primary'):
     with st.spinner(text='Sending...'):
         # prepare headers
-        headers = prepare_headers(payload_type, hdrs_input)
+        headers = utils.prepare_headers(payload_type, hdrs_input)
         try:
             # send request
             response = requests.request(method=method, url=url, headers=headers, data=payload)
@@ -86,13 +65,19 @@ if cols[1].button('Send', type='primary'):
             with rs_col:
                 with st.status(label=str(response.status_code)+' '+response.reason, expanded=True):
                     st.write('Response headers')
-                    st.code(body=pprint.pformat(response.headers, sort_dicts=False), language='json', line_numbers=True)
+                    formatted_hdrs=json.dumps(dict(response.headers), indent=2, sort_keys=True)
+                    st.code(body=formatted_hdrs, language='json', line_numbers=True)
+                    st.write('Response body')
                     # check the Content-Type of response to decide how to display it
-                    if response.headers['Content-Type'] == 'application/json':
-                        st.code(body=pprint.pformat(response.json(), sort_dicts=False), language='json', line_numbers=True)
-                    elif response.headers['Content-Type'] == 'application/xml':
-                        response_content = str(response.content).lstrip('b\'').rstrip('\'')
-                        st.code(body=response_content,language='xml-doc', line_numbers=True)
+                    if 'json' in response.headers['Content-Type']:
+                        formatted_code = utils.format_json(response.json())
+                        st.code(body=formatted_code, language='json', line_numbers=True)
+                    elif 'xml' in response.headers['Content-Type']:
+                        formatted_code = utils.format_xml(response.text)
+                        st.code(body=formatted_code,language='xml', line_numbers=True)
+                    elif 'html'in response.headers['Content-Type']:
+                        formatted_code = utils.format_html(response.text)
+                        st.code(body=formatted_code,language='html', line_numbers=True)
                     else:
                         st.warning('Response type not supported')
         except Exception as e:

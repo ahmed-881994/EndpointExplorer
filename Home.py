@@ -36,7 +36,7 @@ payload_type = None
 payload = None
 # input column
 with rq_col:
-    cols = st.columns((0.35, 2))
+    cols = st.columns((0.5, 2))
 
     method = cols[0].selectbox('Method', ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE'], placeholder='Method', label_visibility='collapsed')
     url = cols[1].text_input('URL', placeholder='URL',label_visibility='collapsed')
@@ -45,7 +45,7 @@ with rq_col:
         payload_type = cols[0].selectbox('Payload type', ['json', 'xml'], placeholder='Method', label_visibility='collapsed')
         with cols[1]:
             #payload = st_monaco(value='', height="300px", language=payload_type, lineNumbers=True, minimap=True, theme='streamlit')
-            payload = st_ace(language = payload_type, show_gutter=True, auto_update=True, height=252)
+            payload = st_ace(language = payload_type, show_gutter=True, auto_update=True, height=252, theme='dracula')
    
 
     if 'data' not in st.session_state:

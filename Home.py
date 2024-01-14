@@ -1,11 +1,8 @@
 import streamlit as st
-from streamlit_monaco import st_monaco
 from utils import utils
 import requests
 import json
 from streamlit_ace import st_ace
-from bs4 import BeautifulSoup
-from xml.dom import minidom
 # page config
 st.set_page_config(page_title='Endpoint Explorer', page_icon='👨‍🚀', layout='wide', initial_sidebar_state='collapsed')
 

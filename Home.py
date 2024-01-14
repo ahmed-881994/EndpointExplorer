@@ -38,10 +38,10 @@ payload = None
 with rq_col:
     cols = st.columns((0.5, 2))
 
-    method = cols[0].selectbox('Method', ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE'], placeholder='Method', label_visibility='collapsed')
+    method = cols[0].selectbox('Method', ['OPTIONS', 'HEAD', 'GET', 'POST', 'PUT', 'PATCH', 'DELETE'], placeholder='Method', label_visibility='collapsed')
     url = cols[1].text_input('URL', placeholder='URL',label_visibility='collapsed')
      # show payload type & content if method is not GET, DELETE or HEAD
-    if method not in ['GET', 'HEAD', 'DELETE']:
+    if method not in ['GET', 'HEAD', 'DELETE', 'OPTIONS']:
         payload_type = cols[0].selectbox('Payload type', ['json', 'xml'], placeholder='Method', label_visibility='collapsed')
         with cols[1]:
             #payload = st_monaco(value='', height="300px", language=payload_type, lineNumbers=True, minimap=True, theme='streamlit')

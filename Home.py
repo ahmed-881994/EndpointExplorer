@@ -2,12 +2,12 @@ import streamlit as st
 from streamlit_monaco import st_monaco
 import pprint
 import requests
-
+from streamlit_ace import st_ace
 # page config
-st.set_page_config(page_title='Endpoint Explorer', page_icon='👩‍🚀', layout='wide', initial_sidebar_state='collapsed')
+st.set_page_config(page_title='Endpoint Explorer', page_icon='👨‍🚀', layout='wide', initial_sidebar_state='collapsed')
 
 # title
-st.title('Endpoint Explorer 👩‍🚀')
+st.title('Endpoint Explorer 👨‍🚀')
 
 def prepare_headers(payload_type, headers_dict):
     """Prepares the request headers dict
@@ -44,7 +44,8 @@ with rq_col:
     if method not in ['GET', 'HEAD', 'DELETE']:
         payload_type = cols[0].selectbox('Payload type', ['json', 'xml'], placeholder='Method', label_visibility='collapsed')
         with cols[1]:
-            payload = st_monaco(value='', height="300px", language=payload_type, lineNumbers=True, minimap=True, theme='streamlit')
+            #payload = st_monaco(value='', height="300px", language=payload_type, lineNumbers=True, minimap=True, theme='streamlit')
+            payload = st_ace(language = payload_type, show_gutter=True, auto_update=True, height=252)
    
 
     if 'data' not in st.session_state:

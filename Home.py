@@ -10,21 +10,21 @@ st.set_page_config(page_title='Endpoint Explorer', page_icon='👨‍🚀', layo
 st.title('Endpoint Explorer 👨‍🚀')
 
 # declare columns & init optional variables
+
+meth_url = st.columns((0.5,2))
 rq_col, rs_col = st.columns(2)
 payload_type = None
 payload = None
-# input column
-with rq_col:
-    cols = st.columns((0.5, 2))
 
-    method = cols[0].selectbox('Method', ['OPTIONS', 'HEAD', 'GET', 'POST', 'PUT', 'PATCH', 'DELETE'], placeholder='Method', label_visibility='collapsed')
-    url = cols[1].text_input('URL', placeholder='URL',label_visibility='collapsed')
-     # show payload type & content if method is not GET, DELETE or HEAD
+# method and url
+method= meth_url[0].selectbox('Method', ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS', 'HEAD'], placeholder='Method', label_visibility='collapsed')
+url = meth_url[1].text_input('URL', placeholder='URL',label_visibility='collapsed')
+
+# request column
+with rq_col:
     if method not in ['GET', 'HEAD', 'DELETE', 'OPTIONS']:
-        payload_type = cols[0].selectbox('Payload type', ['json', 'xml'], placeholder='Method', label_visibility='collapsed')
-        with cols[1]:
-            #payload = st_monaco(value='', height="300px", language=payload_type, lineNumbers=True, minimap=True, theme='streamlit')
-            payload = st_ace(language = payload_type, show_gutter=True, auto_update=True, height=300, theme='dracula')
+        payload_type = st.selectbox('Payload type', ['json', 'xml'], placeholder='Method', label_visibility='collapsed')
+        payload = st_ace(language = payload_type, show_gutter=True, auto_update=True, height=300, theme='dracula')
    
 
     if 'data' not in st.session_state:
@@ -49,9 +49,11 @@ with rq_col:
             validate="\\S"
         )
     }, key='hdrs_input')
+    btn_section=st.columns((2,1))
+    action=btn_section[1].button('Send', type='primary', key='send-req', use_container_width=True)
 
 # send request
-if cols[1].button('Send', type='primary'):
+if action:
     with st.spinner(text='Sending...'):
         # prepare headers
         headers = utils.prepare_headers(payload_type, hdrs_input)

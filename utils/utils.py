@@ -61,5 +61,5 @@ def prepare_headers(payload_type, headers_dict):
         if headers_dict['key'][i]=='':
             continue
         else:
-            headers.update({headers_dict['key'][i]:headers_dict['key'][i]})
+            headers.update({headers_dict['key'][i]:headers_dict['value'][i]})
     return headers

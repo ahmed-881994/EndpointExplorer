@@ -17,7 +17,7 @@ payload_type = None
 payload = None
 
 # method and url
-method= meth_url[0].selectbox('Method', ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS', 'HEAD'], placeholder='Method', label_visibility='collapsed')
+method= meth_url[0].selectbox('Method', ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS', 'HEAD'], placeholder='Method', label_visibility='collapsed')
 url = meth_url[1].text_input('URL', placeholder='URL',label_visibility='collapsed')
 
 # request column
